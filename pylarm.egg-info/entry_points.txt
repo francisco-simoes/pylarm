@@ -1,0 +1,2 @@
+[console_scripts]
+pylarm = pylarm.alarm_clock:alarm_clock

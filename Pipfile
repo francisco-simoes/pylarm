@@ -4,10 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pipfile = "*"
-click = "*"
-playsound = "*"
-pretty-errors = "*"
+# pipfile = "*"
+# click = "*"
+# playsound = "*"
+# pretty-errors = "*"
+pylarm = {path = "."}
 
 [dev-packages]
 
