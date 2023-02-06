@@ -1,7 +1,6 @@
 README.md
 setup.py
 pylarm/__init__.py
-pylarm/_utils.py
 pylarm/alarm_clock.py
 pylarm.egg-info/PKG-INFO
 pylarm.egg-info/SOURCES.txt

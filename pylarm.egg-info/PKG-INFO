@@ -2,10 +2,16 @@ Metadata-Version: 2.1
 Name: pylarm
 Version: 1.0
 Summary: Set simple alarms from the command line.
+Home-page: UNKNOWN
 Author: francisco
 Author-email: francisconfqsimoes@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown
+
+UNKNOWN
+
