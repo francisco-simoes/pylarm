@@ -12,60 +12,41 @@ import playsound
 @click.option(
     "--at",
     type=str,
-    # prompt="When should the alarm go off?",
-    help="Time when the alarm should go off",
+    prompt="When should the alarm go off? \
+(Format: HH:MM, +HH:MM or +<seconds_to_wait>)",
+    help="Time when the alarm should go off, or time to wait until it goes off. \n \
+    Format: HH:MM if setting a time OR +HH:MM if setting the time to wait. \
+        For the latter case, you can also wrtie +<seconds_to_wait>.",
 )
-@click.option(
-    "--after",
-    type=str,
-    help="Time to wait from now until the alarm goes off. \
-    Format: HH:MM or just the number of seconds.",
-)
-# @click.option(
-# "--repeatfor", type=int, help="Time interval after which alarm stops repeating."
-# )
-# @click.option("--repeatinterval", type=int, help="Time interval between repetitions.")
 @click.option("--sound", type=str, help="Sound file to play when alarm rings")
-@click.option("--message", type=str, help="Message to display in the dialog box")
-def alarm_clock(at, after, sound, message):
+@click.option(
+    "--message",
+    type=str,
+    help="Message to display in the dialog box",
+    prompt="What message should be displayed?",
+)
+def alarm_clock(at, sound, message):
     """Set an alarm."""
     # Calculate the time to wait (in seconds) until the alarm goes off
-    if at:
+    if "+" not in at:
         delta = _compute_time_to_wait(target_time=at)
         time_to_wait = delta.total_seconds()
-    elif after:
+    else:
         # delta = _convert_to_datetime(after)
         # time_to_wait = delta.total_seconds()
+        after = at.removeprefix("+")
         if ":" in after:
             time_to_wait = _after_to_seconds(after)
         else:  # Already in seconds
             time_to_wait = int(after)
 
-    else:
-        raise TypeError("You must provide either the --at or --in argument")
-
     win = tk.Tk()
     win.withdraw()
 
-    # Start the alarm loop
-    # if repeatfor:  # False if alarm should not repeat at all
-    #     keep_repeating = True
-    #     time_since_alarm_started = 0
-    # else:
-    #     keep_repeating = False
-    # while True:
-    # Wait until the alarm goes off
     time.sleep(time_to_wait)
 
     # Play the alarm sound
     playsound.playsound(sound, block=False)
-
-    # # Note the change to this line
-    # frame = tk.Frame(win, width=500, height=500)
-    # frame.pack()  # Note the parentheses added here
-
-    # stop_button = tk.Button(my_frame, text="I am at (100x150)")
-    # button1.place(x=100, y=150)
 
     # Display the dialog box with the message and a stop button
     messagebox = tk.Toplevel(win)
@@ -85,16 +66,6 @@ def alarm_clock(at, after, sound, message):
 
     # Start the GUI event loop
     win.mainloop()
-
-    # if keep_repeating:
-    #     time_since_alarm_started += time_to_wait  # Update
-    #     print(time_since_alarm_started)
-    #     if time_since_alarm_started >= repeatfor:
-    #         break
-    # else:
-    #     break
-    # # Calculate the time to wait until the next alarm
-    # time_to_wait = repeatinterval
 
 
 def _compute_time_to_wait(target_time):
