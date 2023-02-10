@@ -8,7 +8,7 @@ with open("requirements.txt") as fp:
 
 setuptools.setup(
     name="pylarm",
-    version="1.1",
+    version="1.2",
     author="francisco",
     author_email="francisconfqsimoes@gmail.com",
     description="Minimalistic tool to set alarms from the terminal.",

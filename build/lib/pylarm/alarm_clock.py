@@ -3,6 +3,7 @@
 import time
 import tkinter as tk
 from datetime import datetime, timedelta
+from os import fork
 
 import click
 import playsound
@@ -28,44 +29,48 @@ import playsound
 def alarm_clock(at, sound, message):
     """Set an alarm."""
     # Calculate the time to wait (in seconds) until the alarm goes off
-    if "+" not in at:
-        delta = _compute_time_to_wait(target_time=at)
-        time_to_wait = delta.total_seconds()
-    else:
-        # delta = _convert_to_datetime(after)
-        # time_to_wait = delta.total_seconds()
-        after = at.removeprefix("+")
-        if ":" in after:
-            time_to_wait = _after_to_seconds(after)
-        else:  # Already in seconds
-            time_to_wait = int(after)
+    pid = fork()  # Create child process which will run in the background
+    if pid == 0:  # Child process will run this
+        if "+" not in at:
+            delta = _compute_time_to_wait(target_time=at)
+            time_to_wait = delta.total_seconds()
+        else:
+            # delta = _convert_to_datetime(after)
+            # time_to_wait = delta.total_seconds()
+            after = at.removeprefix("+")
+            if ":" in after:
+                time_to_wait = _after_to_seconds(after)
+            else:  # Already in seconds
+                time_to_wait = int(after)
 
-    win = tk.Tk()
-    win.withdraw()
+        win = tk.Tk()
+        win.withdraw()
 
-    time.sleep(time_to_wait)
+        time.sleep(time_to_wait)
 
-    # Play the alarm sound
-    playsound.playsound(sound, block=False)
+        # Play the alarm sound
+        playsound.playsound(sound, block=False)
 
-    # Display the dialog box with the message and a stop button
-    messagebox = tk.Toplevel(win)
-    # messagebox = tk.Toplevel(frame)
-    messagebox.title("Alarm")
-    label = tk.Label(messagebox, text=message, width=200, height=50)
-    label.pack()
-    stop_button = tk.Button(
-        messagebox,
-        text="Stop Alarm",
-        command=lambda: _stop_alarm(win),
-        height=20,
-        width=20,
-        background="red",
-    )
-    stop_button.pack()
+        # Display the dialog box with the message and a stop button
+        messagebox = tk.Toplevel(win)
+        # messagebox = tk.Toplevel(frame)
+        messagebox.title("Alarm")
+        label = tk.Label(messagebox, text=message, width=200, height=50)
+        label.pack()
+        stop_button = tk.Button(
+            messagebox,
+            text="Stop Alarm",
+            command=lambda: _stop_alarm(win),
+            height=20,
+            width=20,
+            background="red",
+        )
+        stop_button.pack()
 
-    # Start the GUI event loop
-    win.mainloop()
+        # Start the GUI event loop
+        win.mainloop()
+    else:  # For parent process
+        print("\nAlarm was set.")
 
 
 def _compute_time_to_wait(target_time):
