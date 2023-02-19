@@ -9,7 +9,13 @@ import click
 import playsound
 
 
-@click.command()
+@click.group()
+def cli():  # noqa: D103
+    pass
+
+
+# Add subcommand to set alarm
+@cli.command()
 @click.option(
     "--at",
     type=str,
@@ -26,7 +32,7 @@ import playsound
     help="Message to display in the dialog box",
     prompt="What message should be displayed?",
 )
-def alarm_clock(at, sound, message):
+def set(at, sound, message):
     """Set an alarm."""
     # Calculate the time to wait (in seconds) until the alarm goes off
     pid = fork()  # Create child process which will run in the background
@@ -116,4 +122,4 @@ def _stop_alarm(window):
 
 
 if __name__ == "__main__":
-    alarm_clock()
+    cli()
