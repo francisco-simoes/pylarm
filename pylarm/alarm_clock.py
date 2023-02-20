@@ -40,7 +40,7 @@ def set(at, sound, message):
     pid = fork()  # Create child process which will run in the background
     if pid == 0:  # Child process will run this
         actual_pid = getpid()
-        print(f"\nAlarm set in process {actual_pid}.")
+        print(f"Alarm set in process with pid {actual_pid}.")
         if "+" not in at:
             delta = _compute_time_to_wait(target_time=at)
             time_to_wait = delta.total_seconds()
@@ -97,6 +97,7 @@ def cancel(pid):
     process_cmd = "".join(psutil.Process(pid).cmdline())
     if "pylarm" in process_cmd and "set" in process_cmd:
         kill(pid, SIGTERM)
+        print("Alarm cancelled.")
     else:
         raise ValueError("Given pid does not correspond to an alarm set by pylarm.")
 

@@ -8,8 +8,8 @@ with open("requirements.txt") as fp:
 
 setuptools.setup(
     name="pylarm",
-    version="1.2",
-    author="francisco",
+    version="2.0",
+    author="francisco-simoes",
     author_email="francisconfqsimoes@gmail.com",
     description="Minimalistic tool to set alarms from the terminal.",
     long_description=long_description,
@@ -19,7 +19,7 @@ setuptools.setup(
     install_requires=install_requires,
     entry_points={
         "console_scripts": [
-            "pylarm=pylarm.alarm_clock:alarm_clock",
+            "pylarm=pylarm.alarm_clock:cli",
         ],
     },
     classifiers=[

@@ -3,13 +3,21 @@
 import time
 import tkinter as tk
 from datetime import datetime, timedelta
-from os import fork
+from os import fork, getpid, kill
+from signal import SIGTERM
 
 import click
 import playsound
+import psutil
 
 
-@click.command()
+@click.group()
+def cli():  # noqa: D103
+    pass
+
+
+# Add subcommand to set alarm
+@cli.command()
 @click.option(
     "--at",
     type=str,
@@ -26,11 +34,13 @@ import playsound
     help="Message to display in the dialog box",
     prompt="What message should be displayed?",
 )
-def alarm_clock(at, sound, message):
+def set(at, sound, message):
     """Set an alarm."""
     # Calculate the time to wait (in seconds) until the alarm goes off
     pid = fork()  # Create child process which will run in the background
     if pid == 0:  # Child process will run this
+        actual_pid = getpid()
+        print(f"Alarm set in process with pid {actual_pid}.")
         if "+" not in at:
             delta = _compute_time_to_wait(target_time=at)
             time_to_wait = delta.total_seconds()
@@ -70,7 +80,26 @@ def alarm_clock(at, sound, message):
         # Start the GUI event loop
         win.mainloop()
     else:  # For parent process
-        print("\nAlarm was set.")
+        pass
+
+
+# Add subcommand to delete alarm
+@cli.command()
+@click.option(
+    "--pid",
+    type=int,
+    prompt="What is the pid of the alarm to cancel?",
+    help="Process id of the process in which the alarm to cancel was set. \n \
+    This number was shown when setting the alarm.",
+)
+def cancel(pid):
+    """Cancel the alarm given its pid."""
+    process_cmd = "".join(psutil.Process(pid).cmdline())
+    if "pylarm" in process_cmd and "set" in process_cmd:
+        kill(pid, SIGTERM)
+        print("Alarm cancelled.")
+    else:
+        raise ValueError("Given pid does not correspond to an alarm set by pylarm.")
 
 
 def _compute_time_to_wait(target_time):
@@ -116,4 +145,4 @@ def _stop_alarm(window):
 
 
 if __name__ == "__main__":
-    alarm_clock()
+    cli()

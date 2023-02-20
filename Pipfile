@@ -9,7 +9,6 @@ name = "pypi"
 # playsound = "*"
 # pretty-errors = "*"
 pylarm = {path = "."}
-psutil = "*"
 
 [dev-packages]
 
